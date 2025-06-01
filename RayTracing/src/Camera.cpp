@@ -11,8 +11,8 @@ using namespace Walnut;
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
-	m_ForwardDirection = glm::vec3(0, 0, -1);
-	m_Position = glm::vec3(0, 0, 6);
+	m_ForwardDirection = glm::vec3(-1, -0.5, -1);
+	m_Position = glm::vec3(3, 3, 3);
 }
 
 bool Camera::OnUpdate(float ts)
@@ -34,7 +34,8 @@ bool Camera::OnUpdate(float ts)
 	constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
 
-	float speed = 5.0f;
+	float speed = 8.5f; // m/s
+	float rotSensitivity = 1.2; 
 
 	// Movement
 	if (Input::IsKeyDown(KeyCode::W))
@@ -68,11 +69,16 @@ bool Camera::OnUpdate(float ts)
 		moved = true;
 	}
 
+	// Shift camera to other end of border if it passes the border
+	float borderRadius = 100.0f;
+	if (glm::length(m_Position) >= borderRadius)
+		m_Position = -2.0f * glm::normalize(m_Position);
+
 	// Rotation
 	if (delta.x != 0.0f || delta.y != 0.0f)
 	{
-		float pitchDelta = delta.y * GetRotationSpeed();
-		float yawDelta = delta.x * GetRotationSpeed();
+		float pitchDelta = delta.y * GetRotationSpeed() * rotSensitivity;
+		float yawDelta = delta.x * GetRotationSpeed() * rotSensitivity;
 
 		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
 			glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));

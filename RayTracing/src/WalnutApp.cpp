@@ -3,6 +3,7 @@
 
 #include "Walnut/Image.h"
 #include "Walnut/Timer.h"
+#include "Walnut/Random.h"
 
 #include "Renderer.h"
 #include "Camera.h"
@@ -15,45 +16,102 @@ class ExampleLayer : public Walnut::Layer
 {
 public:
 	ExampleLayer()
-		: m_Camera(45.0f, 0.1f, 100.0f)
+		: m_Camera(85.0f, 0.1f, 1000000.0f)
+		
 	{
 		Material& pinkSphere = m_Scene.Materials.emplace_back();
 		pinkSphere.Albedo = { 1.0f, 0.0f, 1.0f };
 		pinkSphere.Roughness = 0.0f;
+		pinkSphere.EmissionColor = pinkSphere.Albedo;
+		pinkSphere.EmissionPower = 0.5f;
 
 		Material& blueSphere = m_Scene.Materials.emplace_back();
 		blueSphere.Albedo = { 0.2f, 0.3f, 1.0f };
 		blueSphere.Roughness = 0.1f;
+		blueSphere.EmissionColor = blueSphere.Albedo;
+		blueSphere.EmissionPower = 0.5f;
+
+		Material& greenSphere = m_Scene.Materials.emplace_back();
+		greenSphere.Albedo = { 0.4f, 0.9f, 0.0f };// { 0.8f, 0.5f, 0.2f };
+		greenSphere.Roughness = 0.9f;
+		greenSphere.EmissionColor = greenSphere.Albedo;
+		greenSphere.EmissionPower = 0.5f;
 
 		Material& orangeSphere = m_Scene.Materials.emplace_back();
-		orangeSphere.Albedo = { 0.8f, 0.5f, 0.2f };
+		orangeSphere.Albedo = { 0.9f, 0.2f, 0.0f };// { 0.8f, 0.5f, 0.2f };
 		orangeSphere.Roughness = 0.1f;
 		orangeSphere.EmissionColor = orangeSphere.Albedo;
-		orangeSphere.EmissionPower = 2.0f;
+		orangeSphere.EmissionPower = 15.7f;
+
+		{//////
+			BoundingSphere border;
+			border.Position = { 0.0f, 0.0f, 0.0f };
+			border.Radius = 100.0f;
+			m_Scene.Borders.push_back(border);
+		}//////
+
+		
 
 		{
 			Sphere sphere;
 			sphere.Position = { 0.0f, 0.0f, 0.0f };
-			sphere.Radius = 1.0f;
+			sphere.Radius = 0.5f;
 			sphere.MaterialIndex = 0;
 			m_Scene.Spheres.push_back(sphere);
 		}
-
 		{
 			Sphere sphere;
-			sphere.Position = { 2.0f, 0.0f, 0.0f };
-			sphere.Radius = 1.0f;
-			sphere.MaterialIndex = 2;
-			m_Scene.Spheres.push_back(sphere);
-		}
-
-		{
-			Sphere sphere;
-			sphere.Position = { 0.0f, -101.0f, 0.0f };
-			sphere.Radius = 100.0f;
+			sphere.Position = { 3.0f, 0.0f, 0.0f };
+			sphere.Radius = 1.5f;
 			sphere.MaterialIndex = 1;
 			m_Scene.Spheres.push_back(sphere);
 		}
+		{
+			Sphere sphere;
+			sphere.Position = { 0.0f, 6.0f, 0.0f };
+			sphere.Radius = 1.5f;
+			sphere.MaterialIndex = 2;
+			m_Scene.Spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.Position = { 0.0f, 0.0f, 8.0f };
+			sphere.Radius = 1.5f;
+			sphere.MaterialIndex = 3;
+			m_Scene.Spheres.push_back(sphere);
+		}
+
+		
+
+		float scale = 500.0f;
+		int gridNum = 4;
+		for (size_t m = 0; m < gridNum; m++)
+		{
+			for (size_t n = 0; n < gridNum; n++)
+			{
+				for (size_t k = 0; k < gridNum; k++)
+				{
+					Sphere sphere;
+					glm::vec3 loc = Walnut::Random::Vec3(-scale, scale);
+					sphere.Position = {
+						loc[0],
+						loc[1],
+						loc[2]
+					};
+					//sphere.Position = { 
+					//	float(m) * scale - gridNum / 2.0f, 
+					//	float(n) * scale - gridNum / 2.0f,
+					//	float(k) * scale - gridNum / 2.0f 
+					//};
+					sphere.Radius = 1.25f;
+					sphere.MaterialIndex = 3;
+					m_Scene.Spheres.push_back(sphere);
+				}
+			}
+		}
+
+		
+
 	}
 
 	virtual void OnUpdate(float ts) override
@@ -79,6 +137,18 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Scene");
+		for (size_t i = 0; i < m_Scene.Borders.size(); i++)
+		{
+			ImGui::PushID(i);
+			
+			BoundingSphere& sphere = m_Scene.Borders[i];
+			ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
+			ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
+			
+			ImGui::Separator();
+
+			ImGui::PopID();
+		}
 		for (size_t i = 0; i < m_Scene.Spheres.size(); i++)
 		{
 			ImGui::PushID(i);

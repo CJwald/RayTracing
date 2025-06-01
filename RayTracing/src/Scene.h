@@ -23,8 +23,17 @@ struct Sphere
 	int MaterialIndex = 0;
 };
 
+struct BoundingSphere
+{
+	glm::vec3 Position{ 0.0f };
+	float Radius = 0.5f;
+
+	// int MaterialIndex = 0;
+};
+
 struct Scene
 {
 	std::vector<Sphere> Spheres;
+	std::vector<BoundingSphere> Borders;
 	std::vector<Material> Materials;
 };
