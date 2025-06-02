@@ -83,16 +83,13 @@ public:
 
 		
 
-		float scale = 500.0f;
-		int gridNum = 4;
-		for (size_t m = 0; m < gridNum; m++)
-		{
-			for (size_t n = 0; n < gridNum; n++)
-			{
-				for (size_t k = 0; k < gridNum; k++)
-				{
+		float scale = 100.0f;
+		int gridNum = 3;
+		for (size_t m = 0; m < gridNum; m++) {
+			for (size_t n = 0; n < gridNum; n++) {
+				for (size_t k = 0; k < gridNum; k++) {
 					Sphere sphere;
-					glm::vec3 loc = Walnut::Random::Vec3(-scale, scale);
+					glm::vec3 loc = scale * Walnut::Random::Vec3(-1.0f, 1.0f) / glm::length(Walnut::Random::Vec3(-1.0f, 1.0f));
 					sphere.Position = {
 						loc[0],
 						loc[1],
@@ -103,7 +100,7 @@ public:
 					//	float(n) * scale - gridNum / 2.0f,
 					//	float(k) * scale - gridNum / 2.0f 
 					//};
-					sphere.Radius = 1.25f;
+					sphere.Radius = 0.25f;
 					sphere.MaterialIndex = 3;
 					m_Scene.Spheres.push_back(sphere);
 				}
