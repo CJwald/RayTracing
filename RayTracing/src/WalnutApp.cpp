@@ -43,6 +43,36 @@ public:
 		orangeSphere.EmissionColor = orangeSphere.Albedo;
 		orangeSphere.EmissionPower = 15.7f;
 
+		Material& blackSphere = m_Scene.Materials.emplace_back();
+		blackSphere.Albedo = { 0.7f, 0.7f, 0.7f };// { 0.8f, 0.5f, 0.2f };
+		blackSphere.Roughness = 0.9f;
+		blackSphere.EmissionColor = blackSphere.Albedo;
+		blackSphere.EmissionPower = 0.0f;
+		
+
+		{
+			Sphere sphere;
+			sphere.Position = { 0.0f, 0.5f, 0.0f };
+			sphere.Radius = 0.5f;
+			sphere.MaterialIndex = 4;
+			m_Scene.Spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.Position = { 0.0f, -10.0f, 0.0f };
+			sphere.Radius = 10.0f;
+			sphere.MaterialIndex = 2;
+			m_Scene.Spheres.push_back(sphere);
+		}
+		{
+			Sphere sphere;
+			sphere.Position = { 5.0f, 0.5f, 0.0f };
+			sphere.Radius = 0.5f;
+			sphere.MaterialIndex = 3;
+			m_Scene.Spheres.push_back(sphere);
+		}
+
+
 		{//////
 			BoundingSphere border;
 			border.Position = { 0.0f, 0.0f, 0.0f };
@@ -51,37 +81,8 @@ public:
 		}//////
 
 		
-
-		{
-			Sphere sphere;
-			sphere.Position = { 0.0f, 0.0f, 0.0f };
-			sphere.Radius = 0.5f;
-			sphere.MaterialIndex = 0;
-			m_Scene.Spheres.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-			sphere.Position = { 3.0f, 0.0f, 0.0f };
-			sphere.Radius = 1.5f;
-			sphere.MaterialIndex = 1;
-			m_Scene.Spheres.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-			sphere.Position = { 0.0f, 6.0f, 0.0f };
-			sphere.Radius = 1.5f;
-			sphere.MaterialIndex = 2;
-			m_Scene.Spheres.push_back(sphere);
-		}
-		{
-			Sphere sphere;
-			sphere.Position = { 0.0f, 0.0f, 8.0f };
-			sphere.Radius = 1.5f;
-			sphere.MaterialIndex = 3;
-			m_Scene.Spheres.push_back(sphere);
-		}
-
-		
+		#define DOSTARS 1
+		#if DOSTARS
 
 		float scale = 100.0f;
 		int gridNum = 3;
@@ -106,7 +107,7 @@ public:
 				}
 			}
 		}
-
+		#endif	
 		
 
 	}
@@ -127,8 +128,11 @@ public:
 		}
 
 		ImGui::Checkbox("Accumulate", &m_Renderer.GetSettings().Accumulate);
+		ImGui::DragFloat("Max Ray Distance", &m_Renderer.GetSettings().maxRayTravelDist, 0.1f);
+		ImGui::DragInt("Max Recursion Depth", &m_Renderer.GetSettings().maxRecursionDepth, 3);
 
 		if (ImGui::Button("Reset"))
+			m_Renderer.ResetFrameIndex();
 			m_Renderer.ResetFrameIndex();
 
 		ImGui::End();

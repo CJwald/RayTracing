@@ -121,7 +121,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	seed *= m_FrameIndex;
 
 	int bounces = 5;
-	uint32_t recursionDepth = 0;
+	int recursionDepth = 0;
 	for (int i = 0; i < bounces; i++) {
 		seed += i;
 
@@ -142,16 +142,14 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	return glm::vec4(light, 1.0f);
 }
 
-Renderer::HitPayload Renderer::TraceRay(Ray& ray, uint32_t depth, glm::vec3 centerFov) {
+Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov) {
 	// (bx^2 + by^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
 	// where
 	// a = ray origin
 	// b = ray direction
 	// r = radius
 	// t = hit distance
-	uint32_t maxRecursion = 3;
 	depth += 1;
-	float maxTravel = 200.0f;
 	float closestB = 0.0f;
 	float farthestB = 0.0f;
 	int closestSphere = -1;
@@ -215,7 +213,7 @@ Renderer::HitPayload Renderer::TraceRay(Ray& ray, uint32_t depth, glm::vec3 cent
 	}
 
 	if (closestSphere < 0)
-		if ((ray.Traveled < maxTravel) && (depth < maxRecursion)) {
+		if ((ray.Traveled < m_Settings.maxRayTravelDist) && (depth < m_Settings.maxRecursionDepth)) {
 			//glm::vec3 originShift = -2.0f * (ray.Direction * farthestB + ray.Origin); // this isnt correct, needs to shift -border hit location
 			
 			//glm::vec3 originShift = -ray.Origin - 2.0f * (centerFov * farthestB);

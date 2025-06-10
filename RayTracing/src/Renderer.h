@@ -15,6 +15,8 @@ public:
 	struct Settings
 	{
 		bool Accumulate = true;
+		int maxRecursionDepth = 3;
+		float maxRayTravelDist = 500.0f;
 	};
 public:
 	Renderer() = default;
@@ -38,7 +40,7 @@ private:
 
 	glm::vec4 PerPixel(uint32_t x, uint32_t y); // RayGen
 
-	HitPayload TraceRay(Ray& ray, uint32_t depth, glm::vec3 centerFov);
+	HitPayload TraceRay(Ray& ray, int depth, glm::vec3 centerFov);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
 private:
