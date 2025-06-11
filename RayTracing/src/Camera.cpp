@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Response.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -12,6 +13,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	: m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 {
 	m_ForwardDirection = glm::vec3(-1, 0.0, 0.0);
+	m_UpDirection = glm::vec3(0.0, 1.0, 0.0);
 	m_Position = glm::vec3(20, 0, 0);
 }
 
@@ -31,8 +33,9 @@ bool Camera::OnUpdate(float ts)
 
 	bool moved = false;
 
-	constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
+	//glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
+	//constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
+	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, m_UpDirection);
 
 	float speed = 50.0f;// 8.5f; // m/s
 	float rotSensitivity = 1.2; 
@@ -60,12 +63,28 @@ bool Camera::OnUpdate(float ts)
 	}
 	if (Input::IsKeyDown(KeyCode::C))
 	{
-		m_Position -= upDirection * speed * ts;
+		m_Position -= m_UpDirection * speed * ts;
 		moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::Space))
 	{
-		m_Position += upDirection * speed * ts;
+		m_Position += m_UpDirection * speed * ts;
+		moved = true;
+	}
+	else if (Input::IsKeyDown(KeyCode::Q))
+	{
+		float rollDelta = ts * -GetRollSpeed() * rotSensitivity;
+
+		glm::quat q = glm::normalize(glm::angleAxis(-rollDelta, glm::vec3(1.0f, 0.0f, 0.0f)));
+		m_UpDirection = glm::rotate(q, m_UpDirection);
+		moved = true;
+	}
+	else if (Input::IsKeyDown(KeyCode::E))
+	{
+		float rollDelta = ts * GetRollSpeed() * rotSensitivity;
+
+		glm::quat q = glm::normalize(glm::angleAxis(-rollDelta, glm::vec3(1.0f, 0.0f, 0.0f)));
+		m_UpDirection = glm::rotate(q, m_UpDirection);
 		moved = true;
 	}
 
@@ -81,7 +100,7 @@ bool Camera::OnUpdate(float ts)
 		float yawDelta = delta.x * GetRotationSpeed() * rotSensitivity;
 
 		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
-			glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+			glm::angleAxis(-yawDelta, m_UpDirection)));
 		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
 		moved = true;
@@ -113,6 +132,11 @@ float Camera::GetRotationSpeed()
 	return 0.3f;
 }
 
+float Camera::GetRollSpeed()
+{
+	return 2.0f;
+}
+
 void Camera::RecalculateProjection()
 {
 	m_Projection = glm::perspectiveFov(glm::radians(m_VerticalFOV), (float)m_ViewportWidth, (float)m_ViewportHeight, m_NearClip, m_FarClip);
@@ -121,7 +145,7 @@ void Camera::RecalculateProjection()
 
 void Camera::RecalculateView()
 {
-	m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, glm::vec3(0, 1, 0));
+	m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, m_UpDirection);
 	m_InverseView = glm::inverse(m_View);
 }
 

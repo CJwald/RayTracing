@@ -7,6 +7,7 @@
 
 #include "Renderer.h"
 #include "Camera.h"
+#include "Response.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -81,7 +82,7 @@ public:
 		}//////
 
 		
-		#define DOSTARS 1
+		#define DOSTARS 0
 		#if DOSTARS
 
 		float scale = 100.0f;
