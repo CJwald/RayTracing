@@ -15,8 +15,8 @@ public:
 	struct Settings
 	{
 		bool Accumulate = true;
-		int maxRecursionDepth = 3;
-		float maxRayTravelDist = 500.0f;
+		int maxRecursionDepth = 5;
+		float maxRayTravelDist = 10000.0f;
 	};
 public:
 	Renderer() = default;

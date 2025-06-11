@@ -33,7 +33,7 @@ public:
 		blueSphere.EmissionPower = 0.5f;
 
 		Material& greenSphere = m_Scene.Materials.emplace_back();
-		greenSphere.Albedo = { 0.4f, 0.9f, 0.0f };// { 0.8f, 0.5f, 0.2f };
+		greenSphere.Albedo = { 0.2f, 0.9f, 0.0f };// { 0.8f, 0.5f, 0.2f };
 		greenSphere.Roughness = 0.9f;
 		greenSphere.EmissionColor = greenSphere.Albedo;
 		greenSphere.EmissionPower = 0.5f;
@@ -82,7 +82,7 @@ public:
 		}//////
 
 		
-		#define DOSTARS 0
+		#define DOSTARS 1
 		#if DOSTARS
 
 		float scale = 100.0f;
@@ -102,7 +102,7 @@ public:
 					//	float(n) * scale - gridNum / 2.0f,
 					//	float(k) * scale - gridNum / 2.0f 
 					//};
-					sphere.Radius = 0.25f;
+					sphere.Radius = 1.25f;
 					sphere.MaterialIndex = 3;
 					m_Scene.Spheres.push_back(sphere);
 				}

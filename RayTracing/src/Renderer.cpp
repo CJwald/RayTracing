@@ -133,7 +133,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 
 		contribution *= material.Albedo;
 		//light += (material.GetEmission() + contribution) * (100.0f - ray.Traveled)/100.0f;
-		light += material.GetEmission();
+		light += material.GetEmission() / (0.01f*ray.Traveled * ray.Traveled) ;//ray.Traveled );
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
 		ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));

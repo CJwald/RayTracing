@@ -14,6 +14,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 {
 	m_ForwardDirection = glm::vec3(-1, 0.0, 0.0);
 	m_UpDirection = glm::vec3(0.0, 1.0, 0.0);
+	m_RightDirection = glm::vec3(0.0, 0.0, -1.0);
 	m_Position = glm::vec3(20, 0, 0);
 }
 
@@ -35,7 +36,7 @@ bool Camera::OnUpdate(float ts)
 
 	//glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	//constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-	glm::vec3 rightDirection = glm::cross(m_ForwardDirection, m_UpDirection);
+	m_RightDirection = glm::cross(m_ForwardDirection, m_UpDirection);
 
 	float speed = 50.0f;// 8.5f; // m/s
 	float rotSensitivity = 1.2; 
@@ -53,12 +54,12 @@ bool Camera::OnUpdate(float ts)
 	}
 	if (Input::IsKeyDown(KeyCode::A))
 	{
-		m_Position -= rightDirection * speed * ts;
+		m_Position -= m_RightDirection * speed * ts;
 		moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::D))
 	{
-		m_Position += rightDirection * speed * ts;
+		m_Position += m_RightDirection * speed * ts;
 		moved = true;
 	}
 	if (Input::IsKeyDown(KeyCode::C))
@@ -77,6 +78,7 @@ bool Camera::OnUpdate(float ts)
 
 		glm::quat q = glm::normalize(glm::angleAxis(-rollDelta, glm::vec3(1.0f, 0.0f, 0.0f)));
 		m_UpDirection = glm::rotate(q, m_UpDirection);
+		m_RightDirection = glm::rotate(q, m_RightDirection);
 		moved = true;
 	}
 	else if (Input::IsKeyDown(KeyCode::E))
@@ -85,6 +87,7 @@ bool Camera::OnUpdate(float ts)
 
 		glm::quat q = glm::normalize(glm::angleAxis(-rollDelta, glm::vec3(1.0f, 0.0f, 0.0f)));
 		m_UpDirection = glm::rotate(q, m_UpDirection);
+		m_RightDirection = glm::rotate(q, m_RightDirection);
 		moved = true;
 	}
 
@@ -99,7 +102,7 @@ bool Camera::OnUpdate(float ts)
 		float pitchDelta = delta.y * GetRotationSpeed() * rotSensitivity;
 		float yawDelta = delta.x * GetRotationSpeed() * rotSensitivity;
 
-		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
+		glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, m_RightDirection),
 			glm::angleAxis(-yawDelta, m_UpDirection)));
 		m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
@@ -129,7 +132,7 @@ void Camera::OnResize(uint32_t width, uint32_t height)
 
 float Camera::GetRotationSpeed()
 {
-	return 0.3f;
+	return 1.0f;
 }
 
 float Camera::GetRollSpeed()
