@@ -22,8 +22,7 @@ bool Camera::OnUpdate(float ts) {
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;
 
-	if (!Input::IsMouseButtonDown(MouseButton::Right))
-	{
+	if (!Input::IsMouseButtonDown(MouseButton::Right)) {
 		Input::SetCursorMode(CursorMode::Normal);
 		return false;
 	}
