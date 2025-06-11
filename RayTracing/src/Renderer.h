@@ -12,8 +12,7 @@
 class Renderer
 {
 public:
-	struct Settings
-	{
+	struct Settings {
 		bool Accumulate = true;
 		int maxRecursionDepth = 5;
 		float maxRayTravelDist = 10000.0f;
@@ -29,8 +28,7 @@ public:
 	void ResetFrameIndex() { m_FrameIndex = 1; }
 	Settings& GetSettings() { return m_Settings; }
 private:
-	struct HitPayload
-	{
+	struct HitPayload {
 		float HitDistance;
 		glm::vec3 WorldPosition;
 		glm::vec3 WorldNormal;

@@ -13,13 +13,9 @@
 
 using namespace Walnut;
 
-class ExampleLayer : public Walnut::Layer
-{
+class ExampleLayer : public Walnut::Layer {
 public:
-	ExampleLayer()
-		: m_Camera(85.0f, 0.1f, 1000000.0f)
-		
-	{
+	ExampleLayer() : m_Camera(85.0f, 0.1f, 1000000.0f) {
 		Material& pinkSphere = m_Scene.Materials.emplace_back();
 		pinkSphere.Albedo = { 1.0f, 0.0f, 1.0f };
 		pinkSphere.Roughness = 0.0f;
@@ -113,14 +109,12 @@ public:
 
 	}
 
-	virtual void OnUpdate(float ts) override
-	{
+	virtual void OnUpdate(float ts) override {
 		if (m_Camera.OnUpdate(ts))
 			m_Renderer.ResetFrameIndex();
 	}
 
-	virtual void OnUIRender() override
-	{
+	virtual void OnUIRender() override {
 		ImGui::Begin("Settings");
 		ImGui::Text("Last render: %.3fms", m_LastRenderTime);
 		if (ImGui::Button("Render"))
@@ -139,8 +133,7 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Scene");
-		for (size_t i = 0; i < m_Scene.Borders.size(); i++)
-		{
+		for (size_t i = 0; i < m_Scene.Borders.size(); i++) {
 			ImGui::PushID(i);
 			
 			BoundingSphere& sphere = m_Scene.Borders[i];
@@ -151,8 +144,7 @@ public:
 
 			ImGui::PopID();
 		}
-		for (size_t i = 0; i < m_Scene.Spheres.size(); i++)
-		{
+		for (size_t i = 0; i < m_Scene.Spheres.size(); i++) {
 			ImGui::PushID(i);
 
 			Sphere& sphere = m_Scene.Spheres[i];
@@ -165,8 +157,7 @@ public:
 			ImGui::PopID();
 		}
 
-		for (size_t i = 0; i < m_Scene.Materials.size(); i++)
-		{
+		for (size_t i = 0; i < m_Scene.Materials.size(); i++) {
 			ImGui::PushID(i);
 
 			Material& material = m_Scene.Materials[i];
@@ -200,8 +191,7 @@ public:
 		Render();
 	}
 
-	void Render()
-	{
+	void Render() {
 		Timer timer;
 
 		m_Renderer.OnResize(m_ViewportWidth, m_ViewportHeight);
@@ -219,19 +209,15 @@ private:
 	float m_LastRenderTime = 0.0f;
 };
 
-Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
-{
+Walnut::Application* Walnut::CreateApplication(int argc, char** argv) {
 	Walnut::ApplicationSpecification spec;
 	spec.Name = "Ray Tracing";
 
 	Walnut::Application* app = new Walnut::Application(spec);
 	app->PushLayer<ExampleLayer>();
-	app->SetMenubarCallback([app]()
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Exit"))
-			{
+	app->SetMenubarCallback([app]() {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Exit")) {
 				app->Close();
 			}
 			ImGui::EndMenu();

@@ -4,8 +4,7 @@
 
 #include <vector>
 
-struct Material
-{
+struct Material {
 	glm::vec3 Albedo{ 1.0f };
 	float Roughness = 1.0f;
 	float Metallic = 0.0f;
@@ -15,24 +14,21 @@ struct Material
 	glm::vec3 GetEmission() const { return EmissionColor * EmissionPower; }
 };
 
-struct Sphere
-{
+struct Sphere {
 	glm::vec3 Position{0.0f};
 	float Radius = 0.5f;
 
 	int MaterialIndex = 0;
 };
 
-struct BoundingSphere
-{
+struct BoundingSphere {
 	glm::vec3 Position{ 0.0f };
 	float Radius = 0.5f;
 
 	// int MaterialIndex = 0;
 };
 
-struct Scene
-{
+struct Scene {
 	std::vector<Sphere> Spheres;
 	std::vector<BoundingSphere> Borders;
 	std::vector<Material> Materials;

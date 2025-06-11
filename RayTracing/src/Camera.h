@@ -33,12 +33,12 @@ private:
 	glm::mat4 m_InverseProjection{ 1.0f };
 	glm::mat4 m_InverseView{ 1.0f };
 
-	float m_VerticalFOV = 45.0f;
+	float m_VerticalFOV = 45.0f; // TODO: It would be nice if this was Horizonal FOV
 	float m_NearClip = 0.1f;
 	float m_FarClip = 100.0f;
 
 	glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
-	glm::vec3 m_ForwardDirection{ 0.0f, 0.0f, 0.0f };
+	glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
 	glm::vec3 m_UpDirection{0.0f, 0.0f, 0.0f};
 	glm::vec3 m_RightDirection{ 0.0f, 0.0f, 0.0f };
 
