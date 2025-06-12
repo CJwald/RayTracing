@@ -18,7 +18,7 @@ bool Player::OnUpdate(float dt) {
     // Input check
     //   Mouse / Key
     InputMove(); // Get the movement inputs
-    InputRot(dt);
+    //InputRot(dt);
     //   Controller
 
     // Boost status updating
@@ -95,7 +95,7 @@ void Player::InputMove() {
     glm::normalize(m_inputMoveVec);
 }
 
-void Player::InputRot(float dt) {
+//void Player::InputRot(float dt) {
 
     // m_inputRotVec = {1.0f, 0.0f, 0.0f, 0.0f};
 
@@ -133,5 +133,5 @@ void Player::InputRot(float dt) {
 	// 	moved = true;
 	// }
 
-}
+//}
 

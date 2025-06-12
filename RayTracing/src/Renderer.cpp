@@ -261,32 +261,32 @@ Renderer::HitPayload Renderer::Miss(const Ray& ray) {
 }
 
 
-bool TriangleHit(Ray& ray, Triangle& triangle) {
-	bool hit = true;
-
-	// Check if the ray hits the plane
-	float nd = glm::dot(triangle.Normal, ray.Direction);
-	if (glm::abs(nd) < 0.0001f) {
-		hit = false
-		return hit;
-	}
-	nps = glm::dot(triangle.Normal, triangle.Verts[0] - ray.Origin);
-	float planeHitDist = nps / nd;
-	glm::vec3 planePoint = ray.Origin + ray.Direction * planeHitDist;
-
-	// Check that the plane-ray intersection is within the triangle
-	for (int e = 0; e < 3; e++) {
-		if (e < 2) {
-			glm::vec3 edge = triangle.Verts[e+1] - triangle.Verts[e];
-		} else {
-			glm::vec3 edge = triangle.Verts[0] - triangle.Verts[e];
-		}
-		glm::vec3 test = glm::cross(edge, planePoint - triangle.Verts[e]);
-		if (glm::dot(test, triangle.Normal) <= 0.0f) {
-			hit = false;
-			break; // if outside any edge break, crossing is outside triangle
-		}
-	}
-
-	return hit;
-}
+//bool TriangleHit(Ray& ray, Triangle& triangle) {
+//	bool hit = true;
+//
+//	// Check if the ray hits the plane
+//	float nd = glm::dot(triangle.Normal, ray.Direction);
+//	if (glm::abs(nd) < 0.0001f) {
+//		hit = false;
+//		return hit;
+//	}
+//	float nps = glm::dot(triangle.Normal, triangle.Verts[0] - ray.Origin);
+//	float planeHitDist = nps / nd;
+//	glm::vec3 planePoint = ray.Origin + ray.Direction * planeHitDist;
+//
+//	// Check that the plane-ray intersection is within the triangle
+//	for (int e = 0; e < 3; e++) {
+//		if (e < 2) {
+//			glm::vec3 edge = triangle.Verts[e+1] - triangle.Verts[e];
+//		} else {
+//			glm::vec3 edge = triangle.Verts[0] - triangle.Verts[e];
+//		}
+//		glm::vec3 test = glm::cross(edge, planePoint - triangle.Verts[e]);
+//		if (glm::dot(test, triangle.Normal) <= 0.0f) {
+//			hit = false;
+//			break; // if outside any edge break, crossing is outside triangle
+//		}
+//	}
+//
+//	return hit;
+//}

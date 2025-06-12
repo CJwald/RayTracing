@@ -3,9 +3,9 @@
 #include <vector>
 
 
-class Player: {
+class Player {
 public:
-    Player(glm::vec3 position);
+    Player(glm::vec3 position, glm::vec3 velocity);
 
 	bool OnUpdate(float dt);
 
@@ -13,10 +13,10 @@ public:
 	const glm::vec3& GetVelocity() const { return m_Velocity; }
 	const glm::vec3& GetDirection() const { return m_ForwardDirection; }
 
-	float GetRotationSpeed() { return m_rotationSpeed };
-	float GetRollSpeed() { return m_rollSpeed };
+    float GetRotationSpeed() { return m_rotationSpeed; }
+    float GetRollSpeed() { return m_rollSpeed; }
     void InputMove();
-    bool Move(glm::vec3 direction, float dt);
+    bool Move(float dt);
     void Rotate(float dt);
 
     struct Settings {
@@ -59,9 +59,9 @@ private:
     glm::vec3 m_Velocity{0.0f, 0.0f, 0.0f};
     glm::vec3 m_CameraPosition{-0.5f, 0.25f, 0.0f}; // Camera location in player frame
 
-	m_ForwardDirection = glm::vec3(-1, 0.0, 0.0);
-	m_UpDirection = glm::vec3(0.0, 1.0, 0.0);
-	m_RightDirection = glm::vec3(0.0, 0.0, -1.0);
+	glm::vec3 m_ForwardDirection = glm::vec3(-1, 0.0, 0.0);
+    glm::vec3 m_UpDirection = glm::vec3(0.0, 1.0, 0.0);
+    glm::vec3 m_RightDirection = glm::vec3(0.0, 0.0, -1.0);
 
     glm::vec3 m_inputMoveVec{0.0f, 0.0f, 0.0f};
     glm::vec4 m_inputRotVec{1.0f, 0.0f, 0.0f, 0.0f};
