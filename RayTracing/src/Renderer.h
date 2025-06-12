@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Ray.h"
 #include "Scene.h"
+#include "Triangle.h"
 
 #include <memory>
 #include <glm/glm.hpp>
@@ -41,6 +42,7 @@ private:
 	HitPayload TraceRay(Ray& ray, int depth, glm::vec3 centerFov);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
+	bool TriangleHit(Ray& ray, Triangle& triangle);
 private:
 	std::shared_ptr<Walnut::Image> m_FinalImage;
 	Settings m_Settings;

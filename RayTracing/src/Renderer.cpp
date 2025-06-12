@@ -126,17 +126,23 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 		seed += i;
 
 		Renderer::HitPayload payload = TraceRay(ray, recursionDepth, centerFov);
-		if (payload.HitDistance < 0.0f) { break; }
+		if (payload.HitDistance < 0.0f) { 
+			glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+			light += skyColor * contribution;
+			// contribution *= skyColor; // maybe this insetad of above light equation?
+			// light += contribution;
+			break;
+		}
 
 		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
 		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
 
 		contribution *= material.Albedo;
-		//light += (material.GetEmission() + contribution) * (100.0f - ray.Traveled)/100.0f;
-		light += material.GetEmission() / (0.01f*ray.Traveled * ray.Traveled) ;//ray.Traveled );
+		light += (material.GetEmission() * contribution) / (0.01f * ray.Traveled * ray.Traveled) ;//ray.Traveled );
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-		ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
+		//ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
+		ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed) * material.Roughness);
 	}
 
 	return glm::vec4(light, 1.0f);
@@ -252,4 +258,35 @@ Renderer::HitPayload Renderer::Miss(const Ray& ray) {
 	Renderer::HitPayload payload;
 	payload.HitDistance = -1.0f;
 	return payload;
+}
+
+
+bool TriangleHit(Ray& ray, Triangle& triangle) {
+	bool hit = true;
+
+	// Check if the ray hits the plane
+	float nd = glm::dot(triangle.Normal, ray.Direction);
+	if (glm::abs(nd) < 0.0001f) {
+		hit = false
+		return hit;
+	}
+	nps = glm::dot(triangle.Normal, triangle.Verts[0] - ray.Origin);
+	float planeHitDist = nps / nd;
+	glm::vec3 planePoint = ray.Origin + ray.Direction * planeHitDist;
+
+	// Check that the plane-ray intersection is within the triangle
+	for (int e = 0; e < 3; e++) {
+		if (e < 2) {
+			glm::vec3 edge = triangle.Verts[e+1] - triangle.Verts[e];
+		} else {
+			glm::vec3 edge = triangle.Verts[0] - triangle.Verts[e];
+		}
+		glm::vec3 test = glm::cross(edge, planePoint - triangle.Verts[e]);
+		if (glm::dot(test, triangle.Normal) <= 0.0f) {
+			hit = false;
+			break; // if outside any edge break, crossing is outside triangle
+		}
+	}
+
+	return hit;
 }
