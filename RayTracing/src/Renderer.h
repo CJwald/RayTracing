@@ -43,6 +43,10 @@ private:
 	HitPayload TraceRay(Ray& ray, int depth, glm::vec3 centerFov);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
+	glm::vec3 ComputeBRDF(const glm::vec3& albedo, float metallic, float roughness,
+                      const glm::vec3& normal, const glm::vec3& viewDir,
+                      const glm::vec3& lightDir, const glm::vec3& lightColor)
+					  
 	bool TriangleHit(Ray& ray, Triangle& triangle);
 private:
 	std::shared_ptr<Walnut::Image> m_FinalImage;
