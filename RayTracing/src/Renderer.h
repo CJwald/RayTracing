@@ -16,6 +16,7 @@ public:
 	struct Settings {
 		bool Accumulate = true;
 		int maxRecursionDepth = 5;
+		int bounces = 5;
 		float maxRayTravelDist = 10000.0f;
 	};
 public:

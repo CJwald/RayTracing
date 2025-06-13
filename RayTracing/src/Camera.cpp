@@ -53,7 +53,7 @@ bool Camera::OnUpdate(float ts) {
 		m_Position += m_RightDirection * speed * ts;
 		moved = true;
 	}
-	if (Input::IsKeyDown(KeyCode::C)) {                // DOWN
+	if (Input::IsKeyDown(KeyCode::LeftControl)) {                // DOWN
 		m_Position -= m_UpDirection * speed * ts;
 		moved = true;
 	} else if (Input::IsKeyDown(KeyCode::Space)) {     // UP

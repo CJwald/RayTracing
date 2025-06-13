@@ -4,6 +4,7 @@
 //#include <iostream>
 #include <execution>
 
+
 namespace Utils {
 
 	static uint32_t ConvertToRGBA(const glm::vec4& color) {
@@ -99,11 +100,12 @@ void Renderer::Render(const Scene& scene, const Camera& camera) {
 #endif
 
 	m_FinalImage->SetData(m_ImageData);
+	m_FrameIndex++;
 
-	if (m_Settings.Accumulate)
-		m_FrameIndex++;
-	else
-		m_FrameIndex = 1;
+	//if (m_Settings.Accumulate)
+	//	m_FrameIndex++;
+	//else
+	//	m_FrameIndex = 1;
 }
 
 glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
@@ -116,21 +118,22 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	
 	glm::vec3 light(0.0f);
 	glm::vec3 contribution(1.0f);
+	//glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
+	glm::vec3 skyColor = glm::vec3(0.5f, 0.7f, 0.2f);
 
 	uint32_t seed = x + y * m_FinalImage->GetWidth();
 	seed *= m_FrameIndex;
 
-	int bounces = 5;
+	//int bounces = 5;
 	int recursionDepth = 0;
-	for (int i = 0; i < bounces; i++) {
+	for (int i = 0; i < m_Settings.bounces; i++) {
 		seed += i;
 
 		Renderer::HitPayload payload = TraceRay(ray, recursionDepth, centerFov);
 		if (payload.HitDistance < 0.0f) { 
-			glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
-			light += skyColor * contribution;
-			// contribution *= skyColor; // maybe this insetad of above light equation?
-			// light += contribution;
+			//light += skyColor * contribution;
+			contribution *= skyColor; // maybe this insetad of above light equation?
+			light += contribution;
 			break;
 		}
 
@@ -138,7 +141,10 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
 
 		contribution *= material.Albedo;
-		light += (material.GetEmission() * contribution) / (0.01f * ray.Traveled * ray.Traveled) ;//ray.Traveled );
+		//light += (material.GetEmission() * contribution);
+		//light /= (1.f * ray.Traveled * ray.Traveled);//ray.Traveled );
+		light += (material.GetEmission() * contribution);//ray.Traveled );
+		//light += material.GetEmission();
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
 		//ray.Direction = glm::normalize(payload.WorldNormal + Utils::InUnitSphere(seed));
