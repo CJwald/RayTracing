@@ -22,17 +22,30 @@ bool Camera::OnUpdate(float ts) {
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
 	m_LastMousePosition = mousePos;
 
-	if (!Input::IsMouseButtonDown(MouseButton::Right)) {
+	//if (!Input::IsMouseButtonDown(MouseButton::Right)) {
+	//	Input::SetCursorMode(CursorMode::Normal);
+	//	return false;
+	//}
+	//Input::SetCursorMode(CursorMode::Locked);
+
+	if (Input::IsKeyDown(KeyCode::Escape)) { // toggle cursor mode
+		if (m_Cursor) {
+			m_Cursor = false;
+		} else {
+			m_Cursor = true;
+		}
+	}
+	if (m_Cursor) {
 		Input::SetCursorMode(CursorMode::Normal);
 		return false;
+	} else {
+		Input::SetCursorMode(CursorMode::Locked);
 	}
 
-	Input::SetCursorMode(CursorMode::Locked);
+	
 
 	bool moved = false;
 
-	//glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-	//constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
 	m_RightDirection = glm::cross(m_ForwardDirection, m_UpDirection);
 
 	float speed = 50.0f;// 8.5f; // m/s

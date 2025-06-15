@@ -119,7 +119,8 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	glm::vec3 light(0.0f);
 	glm::vec3 contribution(1.0f);
 	//glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
-	glm::vec3 skyColor = glm::vec3(0.5f, 0.7f, 0.2f);
+	//glm::vec3 skyColor = glm::vec3(0.5f, 0.7f, 0.2f);
+	glm::vec3 skyColor = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	uint32_t seed = x + y * m_FinalImage->GetWidth();
 	seed *= m_FrameIndex;
@@ -172,6 +173,7 @@ Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov
 	float hitDistance = std::numeric_limits<float>::max();
 
 	for (size_t j = 0; j < m_ActiveScene->Borders.size(); j++) {
+		const BoundingSphere& border = m_ActiveScene->Borders[j];
 		for (size_t i = 0; i < m_ActiveScene->Spheres.size(); i++) {
 			const Sphere& sphere = m_ActiveScene->Spheres[i];
 			glm::vec3 origin = ray.Origin - sphere.Position;
@@ -193,14 +195,18 @@ Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov
 			// float t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a); // Second hit distance (currently unused)
 			float closestT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
 			if (closestT > 0.0f && closestT < hitDistance) {
-				hitDistance = closestT;
-				//hitDistance = closestT + ray.Traveled; // TODO: maybe need this
-				closestSphere = (int)i;
+				if (glm::length(closestT * ray.Direction + ray.Origin) >= border.Radius) {
+					continue;
+				}
+				else {
+					hitDistance = closestT;
+					//hitDistance = closestT + ray.Traveled; // TODO: maybe need this
+					closestSphere = (int)i;
+				}
 			}
 		}
 
 		if (closestSphere < 0) { // no sphere hit, do border check
-			const BoundingSphere& border = m_ActiveScene->Borders[j];
 			glm::vec3 originb = ray.Origin - border.Position;
 
 			float a = glm::dot(centerFov, centerFov);

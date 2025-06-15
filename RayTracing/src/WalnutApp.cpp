@@ -35,7 +35,7 @@ public:
 		greenSphere.EmissionPower = 0.5f;
 
 		Material& orangeSphere = m_Scene.Materials.emplace_back();
-		orangeSphere.Albedo = { 0.4f, 0.2f, 0.6f };// { 0.8f, 0.5f, 0.2f };
+		orangeSphere.Albedo = { 0.4f, 0.4f, 0.4f };// { 0.8f, 0.5f, 0.2f };
 		orangeSphere.Roughness = 0.05f;
 		orangeSphere.Metallic = 0.1f;
 		orangeSphere.EmissionColor = orangeSphere.Albedo;
