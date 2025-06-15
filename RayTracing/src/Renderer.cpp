@@ -303,40 +303,40 @@ Renderer::HitPayload Renderer::Miss(const Ray& ray) {
 //}
 
 
-Renderer::glm::vec3 ComputeBRDF(const glm::vec3& albedo, float metallic, float roughness,
-                      const glm::vec3& normal, const glm::vec3& viewDir,
-                      const glm::vec3& lightDir, const glm::vec3& lightColor) {
-    glm::vec3 halfVector = glm::normalize(viewDir + lightDir);
-    float NdotL = std::max(glm::dot(normal, lightDir), 0.0f);
-    float NdotV = std::max(glm::dot(normal, viewDir), 0.0f);
-    float NdotH = std::max(glm::dot(normal, halfVector), 0.0f);
-    float HdotV = std::max(glm::dot(halfVector, viewDir), 0.0f);
-
-    // Fresnel (Schlick approximation)
-    glm::vec3 F0 = glm::mix(glm::vec3(0.04f), albedo, metallic); // Dielectric F0 = 0.04, metal F0 = albedo
-    glm::vec3 fresnel = F0 + (1.0f - F0) * std::pow(1.0f - HdotV, 5.0f);
-
-    // Normal Distribution Function (GGX)
-    float alpha = roughness * roughness;
-    float alpha2 = alpha * alpha;
-    float denom = NdotH * NdotH * (alpha2 - 1.0f) + 1.0f;
-    float D = alpha2 / (M_PI * denom * denom);
-
-    // Geometry Term (Smith with GGX)
-    auto G_Smith = [](float NdotV, float roughness) {
-        float a = roughness * roughness;
-        float a2 = a * a;
-        float denom = NdotV * std::sqrt(a2 + (1.0f - a2) * NdotV * NdotV);
-        return 2.0f * NdotV / (NdotV + std::sqrt(a2 + (1.0f - a2) * NdotV * NdotV));
-    };
-    float G = G_Smith(NdotV, roughness) * G_Smith(NdotL, roughness);
-
-    // Specular term (Cook-Torrance)
-    glm::vec3 specular = (D * fresnel * G) / std::max(4.0f * NdotV * NdotL, 0.001f);
-
-    // Diffuse term (Lambertian, only for non-metals)
-    glm::vec3 diffuse = (1.0f - fresnel) * (1.0f - metallic) * albedo / M_PI;
-
-    // Combine diffuse and specular
-    return (diffuse + specular) * lightColor * NdotL;
-}
+//Renderer::glm::vec3 ComputeBRDF(const glm::vec3& albedo, float metallic, float roughness,
+//                      const glm::vec3& normal, const glm::vec3& viewDir,
+//                      const glm::vec3& lightDir, const glm::vec3& lightColor) {
+//    glm::vec3 halfVector = glm::normalize(viewDir + lightDir);
+//    float NdotL = std::max(glm::dot(normal, lightDir), 0.0f);
+//    float NdotV = std::max(glm::dot(normal, viewDir), 0.0f);
+//    float NdotH = std::max(glm::dot(normal, halfVector), 0.0f);
+//    float HdotV = std::max(glm::dot(halfVector, viewDir), 0.0f);
+//
+//    // Fresnel (Schlick approximation)
+//    glm::vec3 F0 = glm::mix(glm::vec3(0.04f), albedo, metallic); // Dielectric F0 = 0.04, metal F0 = albedo
+//    glm::vec3 fresnel = F0 + (1.0f - F0) * std::pow(1.0f - HdotV, 5.0f);
+//
+//    // Normal Distribution Function (GGX)
+//    float alpha = roughness * roughness;
+//    float alpha2 = alpha * alpha;
+//    float denom = NdotH * NdotH * (alpha2 - 1.0f) + 1.0f;
+//    float D = alpha2 / (M_PI * denom * denom);
+//
+//    // Geometry Term (Smith with GGX)
+//    auto G_Smith = [](float NdotV, float roughness) {
+//        float a = roughness * roughness;
+//        float a2 = a * a;
+//        float denom = NdotV * std::sqrt(a2 + (1.0f - a2) * NdotV * NdotV);
+//        return 2.0f * NdotV / (NdotV + std::sqrt(a2 + (1.0f - a2) * NdotV * NdotV));
+//    };
+//    float G = G_Smith(NdotV, roughness) * G_Smith(NdotL, roughness);
+//
+//    // Specular term (Cook-Torrance)
+//    glm::vec3 specular = (D * fresnel * G) / std::max(4.0f * NdotV * NdotL, 0.001f);
+//
+//    // Diffuse term (Lambertian, only for non-metals)
+//    glm::vec3 diffuse = (1.0f - fresnel) * (1.0f - metallic) * albedo / M_PI;
+//
+//    // Combine diffuse and specular
+//    return (diffuse + specular) * lightColor * NdotL;
+//}
