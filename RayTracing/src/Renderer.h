@@ -15,7 +15,7 @@ class Renderer
 public:
 	struct Settings {
 		bool Accumulate = true;
-		int maxRecursionDepth = 5;
+		int maxRecursionDepth = 3;
 		int bounces = 5;
 		float maxRayTravelDist = 10000.0f;
 		float fogdensity = 1.0f;
@@ -41,7 +41,7 @@ private:
 
 	glm::vec4 PerPixel(uint32_t x, uint32_t y); // RayGen
 
-	HitPayload TraceRay(Ray& ray, int depth, glm::vec3 centerFov);
+	HitPayload TraceRay(Ray& ray, int depth, glm::vec3 centerFov, float farthestB);
 	HitPayload ClosestHit(const Ray& ray, float hitDistance, int objectIndex);
 	HitPayload Miss(const Ray& ray);
 	/*glm::vec3 ComputeBRDF(const glm::vec3& albedo, float metallic, float roughness,

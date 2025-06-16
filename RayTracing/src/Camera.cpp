@@ -7,6 +7,8 @@
 
 #include "Walnut/Input/Input.h"
 
+//#include "SDL.h"
+
 using namespace Walnut;
 
 Camera::Camera(float verticalFOV, float nearClip, float farClip)
@@ -27,6 +29,11 @@ bool Camera::OnUpdate(float ts) {
 	//	return false;
 	//}
 	//Input::SetCursorMode(CursorMode::Locked);
+
+	// Shift camera to other end of border if it passes the border
+	float borderRadius = 100.0f; // TODO: needs to be dependent on the scene border sphere
+	if (glm::length(m_Position) >= borderRadius)
+		m_Position = m_Position - 2.0f * m_Position;
 
 	if (Input::IsKeyDown(KeyCode::Escape)) { // toggle cursor mode
 		if (m_Cursor) {
@@ -85,11 +92,6 @@ bool Camera::OnUpdate(float ts) {
 		m_RightDirection = glm::rotate(q, m_RightDirection);
 		moved = true;
 	}
-
-	// Shift camera to other end of border if it passes the border
-	float borderRadius = 100.0f; // TODO: needs to be dependent on the scene border sphere
-	if (glm::length(m_Position) >= borderRadius)
-		m_Position = m_Position -2.0f * m_Position;
 
 	// Rotation
 	if (delta.x != 0.0f || delta.y != 0.0f) {

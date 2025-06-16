@@ -121,6 +121,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	//glm::vec3 skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
 	//glm::vec3 skyColor = glm::vec3(0.5f, 0.7f, 0.2f);
 	glm::vec3 skyColor = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 fogColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	uint32_t seed = x + y * m_FinalImage->GetWidth();
 	seed *= m_FrameIndex;
@@ -129,8 +130,8 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	int recursionDepth = 0;
 	for (int i = 0; i < m_Settings.bounces; i++) {
 		seed += i;
-
-		Renderer::HitPayload payload = TraceRay(ray, recursionDepth, centerFov);
+		float farthestB = 0.0f;
+		Renderer::HitPayload payload = TraceRay(ray, recursionDepth, centerFov, farthestB);
 		if (payload.HitDistance < 0.0f) { 
 			//light += skyColor * contribution;
 			contribution *= skyColor; // maybe this insetad of above light equation?
@@ -149,6 +150,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 		//float fogVisibilityScale = 2^(-(ray.Traveled*m_Settings.fogdensity)^2);
 		light += contribution; // maybe? 
 		light += material.GetEmission();
+		
 		//light += (material.GetEmission() * contribution);//ray.Traveled );
 
 		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
@@ -159,7 +161,7 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 	return glm::vec4(light, 1.0f);
 }
 
-Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov) {
+Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov, float lastB) {
 	// (bx^2 + by^2)t^2 + (2(axbx + ayby))t + (ax^2 + ay^2 - r^2) = 0
 	// where
 	// a = ray origin
@@ -238,15 +240,20 @@ Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov
 		if ((ray.Traveled < m_Settings.maxRayTravelDist) && (depth < m_Settings.maxRecursionDepth)) {
 			//glm::vec3 originShift = -2.0f * (ray.Direction * farthestB + ray.Origin); // this isnt correct, needs to shift -border hit location
 			
-			//glm::vec3 originShift = -ray.Origin - 2.0f * (centerFov * farthestB);
-			//ray.Origin = ray.Origin + originShift;
 			glm::vec3 C = (centerFov * farthestB); // Vec from camera focal point to border hit
+			// position based recursion
+			//glm::vec3 C = (glm::normalize(ray.Origin) * (100.f - glm::length(ray.Origin)));
+			//if (glm::dot(centerFov, C) <= 0.0f) {
+			//	C = -C;
+			//}
 			glm::vec3 A = ray.Origin + C; // Vec from world origin to camera focal border hit
 			ray.Origin = -(A + C);
-			//ray.Origin = -A;
+			// Move recusrsion rays closer
+			//ray.Origin = ray.Origin + ray.Direction * (lastB-closestB);
+			//ray.Direction = glm::normalize(ray.Direction + centerFov);
 
 
-			return TraceRay(ray, depth, centerFov);
+			return TraceRay(ray, depth, centerFov, farthestB);
 			//return TraceRay(ray, depth, centerFov, farthestB); // idea to pass in border hit, then shift ray origin to account for the delta from the sphere
 		} else {
 			return Miss(ray);
