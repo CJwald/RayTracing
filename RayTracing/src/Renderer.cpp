@@ -146,7 +146,6 @@ glm::vec4 Renderer::PerPixel(uint32_t x, uint32_t y) {
 		contribution *= material.Albedo * (1.0f - material.Metallic); // Grok told me this might be a way to add metallic
 		//light += (material.GetEmission() * contribution);
 		//light += material.GetEmission();
-		//light /= (1.f * ray.Traveled * ray.Traveled);//ray.Traveled );
 		//float fogVisibilityScale = 2^(-(ray.Traveled*m_Settings.fogdensity)^2);
 		light += contribution; // maybe? 
 		light += material.GetEmission();
@@ -258,7 +257,7 @@ Renderer::HitPayload Renderer::TraceRay(Ray& ray, int depth, glm::vec3 centerFov
 		} else {
 			return Miss(ray);
 		}
-
+	ray.Traveled = hitDistance;
 	return ClosestHit(ray, hitDistance, closestSphere);
 }
 
